@@ -6,6 +6,11 @@ export async function GET(req: NextRequest) {
   const ip = req.headers.get("x-forwarded-for") || "unbekannt";
   const userAgent = req.headers.get("user-agent") || "unbekannt";
 
+  console.log("📥 API aufgerufen");
+
+    console.log("🔐 GMAIL_APP_USER:", process.env.GMAIL_APP_USER ? "gesetzt" : "leer");
+    console.log("🔐 GMAIL_APP_PASSWORD:", process.env.GMAIL_APP_PASSWORD ? "gesetzt" : "leer");
+
   // ✅ Mailer einrichten (mit AWS SES oder SMTP)
   const transporter = nodemailer.createTransport({
     service: "gmail",
