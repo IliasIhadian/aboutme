@@ -18,8 +18,8 @@ export async function GET(req: NextRequest) {
   const transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
-      user: process.env.GMAIL_APP_USER,
-      pass: process.env.GMAIL_APP_PASSWORD,
+      user: secret('GMAIL_APP_USER'),
+      pass: secret('GMAIL_APP_PASSWORD'),
     },
   });
   
