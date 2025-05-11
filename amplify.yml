@@ -8,6 +8,8 @@ frontend:
         - yarn install
     build:
       commands:
+        - echo "REACT_APP_GMAIL_APP_USER=$GMAIL_APP_USER" >> .env
+        - echo "REACT_APP_GMAIL_APP_PASSWORD=$GMAIL_APP_PASSWORD" >> .env
         - yarn build
   artifacts:
     baseDirectory: .next

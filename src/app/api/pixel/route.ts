@@ -9,11 +9,11 @@ export async function GET(req: NextRequest) {
   const userAgent = req.headers.get("user-agent") || "unbekannt";
 
   console.log("📥 API aufgerufen");
-  console.log("🔐 GMAIL_APP_USER:", process.env.GMAIL_APP_USER ? "gesetzt" : "leer");
-  console.log("🔐 GMAIL_APP_PASSWORD:", process.env.GMAIL_APP_PASSWORD ? "gesetzt" : "leer");
+  console.log("🔐 REACT_APP_GMAIL_APP_USER:", process.env.REACT_APP_GMAIL_APP_USER ? "gesetzt" : "leer");
+  console.log("🔐 REACT_APP_GMAIL_APP_PASSWORD:", process.env.REACT_APP_GMAIL_APP_PASSWORD ? "gesetzt" : "leer");
 
   // Wenn ENV fehlt → sofort abbrechen
-  if (!process.env.GMAIL_APP_USER || !process.env.GMAIL_APP_PASSWORD) {
+  if (!process.env.REACT_APP_GMAIL_APP_USER || !process.env.REACT_APP_GMAIL_APP_PASSWORD) {
     console.error("❌ GMAIL-Zugangsdaten fehlen!");
     return new Response("Server Error: Mail config fehlt", { status: 500 });
   }
@@ -21,14 +21,14 @@ export async function GET(req: NextRequest) {
   const transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
-      user: process.env.GMAIL_APP_USER,
-      pass: process.env.GMAIL_APP_PASSWORD,
+      user: process.env.REACT_APP_GMAIL_APP_USER,
+      pass: process.env.REACT_APP_GMAIL_APP_PASSWORD,
     },
   });
 
   try {
     await transporter.sendMail({
-      from: `"PixelTracker" <${process.env.GMAIL_APP_USER}>`,
+      from: `"PixelTracker" <${process.env.REACT_APP_GMAIL_APP_USER}>`,
       to: "ilias@ihadian.com",
       subject: `📩 Pixel geöffnet: ${email}`,
       text: `Pixel geöffnet!\n\nEmpfänger: ${email}\nIP: ${ip}\nUser-Agent: ${userAgent}`,
