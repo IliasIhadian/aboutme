@@ -8,8 +8,8 @@ export async function GET(req: NextRequest) {
 
   console.log("📥 API aufgerufen");
 
-    console.log("🔐 GMAIL_USER:", process.env.GMAIL_APP_USER ? "gesetzt" : "leer");
-    console.log("🔐 GMAIL_PASS:", process.env.GMAIL_APP_PASSWORD ? "gesetzt" : "leer");
+    console.log("🔐 GMAIL_APP_USER:", process.env.GMAIL_APP_USER ? "gesetzt" : "leer");
+    console.log("🔐 GMAIL_APP_PASSWORD:", process.env.GMAIL_APP_PASSWORD ? "gesetzt" : "leer");
 
   // ✅ Mailer einrichten (mit AWS SES oder SMTP)
   const transporter = nodemailer.createTransport({
