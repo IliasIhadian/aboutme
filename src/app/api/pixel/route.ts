@@ -1,5 +1,7 @@
 import { NextRequest } from "next/server";
 import nodemailer from "nodemailer";
+export const dynamic = 'force-dynamic'; // ← wichtig!
+
 
 export async function GET(req: NextRequest) {
   const email = req.nextUrl.searchParams.get("email") || "unbekannt";
