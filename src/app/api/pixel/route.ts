@@ -1,6 +1,6 @@
 import { NextRequest } from "next/server";
 import nodemailer from "nodemailer";
-import { secret } from '@aws-amplify/backend';
+
 export const dynamic = 'force-dynamic'; // ← wichtig!
 
 
@@ -11,15 +11,15 @@ export async function GET(req: NextRequest) {
 
   console.log("📥 API aufgerufen");
 
-    console.log("🔐 GMAIL_APP_USER:", secret('GMAIL_APP_USER') ? "gesetzt" : "leer");
-    console.log("🔐 GMAIL_APP_PASSWORD:", secret('GMAIL_APP_PASSWORD') ? "gesetzt" : "leer");
+    console.log("🔐 GMAIL_APP_USER:", process.env.REACT_APP_GMAIL_APP_USER ? "gesetzt" : "leer");
+    console.log("🔐 GMAIL_APP_PASSWORD:", process.env.REACT_APP_GMAIL_APP_PASSWORD ? "gesetzt" : "leer");
 
   // ✅ Mailer einrichten (mit AWS SES oder SMTP)
   const transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
-      user: secret('GMAIL_APP_USER'),
-      pass: secret('GMAIL_APP_PASSWORD'),
+      user: process.env.REACT_APP_GMAIL_APP_USER,
+      pass: process.env.REACT_APP_GMAIL_APP_PASSWORD,
     },
   });
   
