@@ -1,17 +1,29 @@
 import { NextRequest } from "next/server";
-import fs from "fs";
-import path from "path";
+import nodemailer from "nodemailer";
 
 export async function GET(req: NextRequest) {
-  const email = req.nextUrl.searchParams.get("email") || "unknown";
-  const ip = req.headers.get("x-forwarded-for") || "unknown";
-  const userAgent = req.headers.get("user-agent") || "unknown";
+  const email = req.nextUrl.searchParams.get("email") || "unbekannt";
+  const ip = req.headers.get("x-forwarded-for") || "unbekannt";
+  const userAgent = req.headers.get("user-agent") || "unbekannt";
 
-  const logLine = `[${new Date().toISOString()}] ${email} - ${ip} - ${userAgent}\n`;
+  // ✅ Mailer einrichten (mit AWS SES oder SMTP)
+  const transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: process.env.GMAIL_APP_USER,
+      pass: process.env.GMAIL_APP_PASSWORD,
+    },
+  });
+  
 
-  const logPath = path.join(process.cwd(), "public", "open-tracking.log");
-  fs.appendFileSync(logPath, logLine);
+  await transporter.sendMail({
+    from: '"PixelTracker" <mail@ihadian.com>',
+    to: "ilias@ihadian.com",
+    subject: `📩 Pixel geöffnet: ${email}`,
+    text: `Das Pixel wurde geöffnet.\n\nEmpfänger: ${email}\nIP: ${ip}\nUser-Agent: ${userAgent}`,
+  });
 
+  // 1x1 transparent GIF zurückgeben
   const pixel = Buffer.from("R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==", "base64");
 
   return new Response(pixel, {
