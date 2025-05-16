@@ -6,6 +6,7 @@ import Sidebar from "@/components/sidebar";
 import Hero from "@/components/hero";
 import { useMediaQuery } from "react-responsive";
 import Navbar from "@/components/navbar";
+import { useEffect, useRef } from "react";
 
 const useDesktopMediaQuery = () =>
   useMediaQuery({ query: "(min-width: 1280px)" });
@@ -26,6 +27,15 @@ const TabletAndBelow = ({ children }: { children: any }) => {
 };
 
 export default function Home() {
+  const hasFired = useRef(false);
+
+  useEffect(() => {
+    if (!hasFired.current) {
+      fetch("/api/pageview");
+      hasFired.current = true;
+    }
+  }, []);
+
   return (
     <main className="rounded p-8">
       <div className="	rounded-md border-2 border-black">
