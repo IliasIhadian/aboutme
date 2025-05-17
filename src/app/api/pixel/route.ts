@@ -28,10 +28,10 @@ export async function GET(req: NextRequest) {
 
   try {
     await transporter.sendMail({
-      from: `"PixelTracker" <${process.env.REACT_APP_GMAIL_APP_USER}>`,
+      from: `"EmailTracker" <${process.env.REACT_APP_GMAIL_APP_USER}>`,
       to: "ilias@ihadian.com",
-      subject: `📩 Pixel geöffnet: ${email}`,
-      text: `Pixel geöffnet!\n\nEmpfänger: ${email}\nIP: ${ip}\nUser-Agent: ${userAgent}`,
+      subject: `📩 Email geöffnet: ${email}`,
+      text: `Email geöffnet!\n\nEmpfänger: ${email}\nIP: ${ip}\nUser-Agent: ${userAgent}`,
     });
 
     console.log("✅ Mail erfolgreich versendet");
@@ -42,7 +42,9 @@ export async function GET(req: NextRequest) {
 
   // 1x1 transparent GIF zurückgeben
   const pixel = Buffer.from("R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==", "base64");
-
+  if (userAgent.includes("Safari/537.36") || ip.startsWith("108.1")) {
+    return new Response("Pixel blockiert");
+  }
   return new Response(pixel, {
     status: 200,
     headers: {
