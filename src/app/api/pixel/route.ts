@@ -32,8 +32,8 @@ export async function GET(req: NextRequest) {
     },
   });
 
-  // Prüfe ob die IP in der Ausnahmeliste ist
-  const isExcludedIP = EXCLUDED_IPS.includes(ip);
+  // Prüfe ob die IP mit einem der ausgeschlossenen Präfixe beginnt
+  const isExcludedIP = EXCLUDED_IPS.some(prefix => ip.startsWith(prefix));
   
   if (!isExcludedIP) {
     try {
