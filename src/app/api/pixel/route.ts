@@ -3,6 +3,12 @@ import nodemailer from "nodemailer";
 
 export const dynamic = "force-dynamic"; // ⬅️ wichtig für App Router
 
+// Liste der IPs, die keine Email-Benachrichtigung auslösen sollen
+const EXCLUDED_IPS = [
+  "108.177",  // Beispiel IP - bitte durch deine eigenen IPs ersetzen
+  "64.252"      // Beispiel IP - bitte durch deine eigenen IPs ersetzen
+];
+
 export async function GET(req: NextRequest) {
   const email = req.nextUrl.searchParams.get("email") || "unbekannt";
   const ip = req.headers.get("x-forwarded-for") || "unbekannt";
@@ -26,25 +32,30 @@ export async function GET(req: NextRequest) {
     },
   });
 
-  try {
-    await transporter.sendMail({
-      from: `"EmailTracker" <${process.env.REACT_APP_GMAIL_APP_USER}>`,
-      to: "ilias@ihadian.com",
-      subject: `📩 Email geöffnet: ${email}`,
-      text: `Email geöffnet!\n\nEmpfänger: ${email}\nIP: ${ip}\nUser-Agent: ${userAgent}`,
-    });
+  // Prüfe ob die IP in der Ausnahmeliste ist
+  const isExcludedIP = EXCLUDED_IPS.includes(ip);
+  
+  if (!isExcludedIP) {
+    try {
+      await transporter.sendMail({
+        from: `"EmailTracker" <${process.env.REACT_APP_GMAIL_APP_USER}>`,
+        to: "ilias@ihadian.com",
+        subject: `📩 Email geöffnet: ${email}`,
+        text: `Email geöffnet!\n\nEmpfänger: ${email}\nIP: ${ip}\nUser-Agent: ${userAgent}`,
+      });
 
-    console.log("✅ Mail erfolgreich versendet");
-  } catch (err) {
-    console.error("❌ Fehler beim Mailversand:", err);
-    return new Response("Fehler beim Mailversand", { status: 500 });
+      console.log("✅ Mail erfolgreich versendet");
+    } catch (err) {
+      console.error("❌ Fehler beim Mailversand:", err);
+      return new Response("Fehler beim Mailversand", { status: 500 });
+    }
+  } else {
+    console.log("🔒 Ausgeschlossene IP erkannt - keine Email gesendet");
   }
 
   // 1x1 transparent GIF zurückgeben
   const pixel = Buffer.from("R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==", "base64");
-  if (userAgent.includes("Safari/537.36") || ip.startsWith("108.1")) {
-    return new Response("Pixel blockiert");
-  }
+  
   return new Response(pixel, {
     status: 200,
     headers: {
